@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd" >
+<suite name="TestSuite" >
+	<test name="OwnerCRUDTests">
+		<classes>
+			<class name="tests.AddOwnerTest" />
+			<class name="tests.EditOwnerTest" />
+		</classes>
+	</test>
+	<test name="PetsCRUDTests">
+		<classes>
+			<class name="tests.AddPetTest" />
+			<class name="tests.EditPetTest" />
+		</classes>
+	</test>
+	<test name="FindTests">
+		<classes>
+			<class name="tests.FindOwnerTest" />
+		</classes>
+	</test>
+</suite>
