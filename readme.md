@@ -31,7 +31,6 @@ The aim of the test project was to study the test's interaction with databases, 
 * Steps/Chain of Invocations
 * Value Object
 * Builder
-* Data Provider
 
 
 ### Allure Report

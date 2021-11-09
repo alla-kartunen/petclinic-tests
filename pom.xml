@@ -12,10 +12,6 @@
   <properties>
     <maven.compiler.source>8</maven.compiler.source>
     <maven.compiler.target>8</maven.compiler.target>
-    <selenium.version>4.0.0-alpha-7</selenium.version>
-    <testng.version>7.4.0</testng.version>
-    <mysql.version>8.0.26</mysql.version>
-    <assertj.version>3.20.2</assertj.version>
     <aspectj.version>1.8.10</aspectj.version>
   </properties>
 
@@ -24,26 +20,32 @@
     <dependency>
       <groupId>org.seleniumhq.selenium</groupId>
       <artifactId>selenium-java</artifactId>
-      <version>${selenium.version}</version>
+      <version>4.0.0-alpha-7</version>
     </dependency>
 
     <dependency>
       <groupId>org.testng</groupId>
       <artifactId>testng</artifactId>
-      <version>${testng.version}</version>
+      <version>7.4.0</version>
     </dependency>
 
     <dependency>
       <groupId>mysql</groupId>
       <artifactId>mysql-connector-java</artifactId>
-      <version>${mysql.version}</version>
+      <version>8.0.26</version>
     </dependency>
 
     <dependency>
       <groupId>org.assertj</groupId>
       <artifactId>assertj-core</artifactId>
-      <version>${assertj.version}</version>
+      <version>3.20.2</version>
       <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>io.github.bonigarcia</groupId>
+      <artifactId>webdrivermanager</artifactId>
+      <version>5.0.3</version>
     </dependency>
 
     <dependency>
