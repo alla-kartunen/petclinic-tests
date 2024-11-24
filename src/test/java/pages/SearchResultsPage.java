@@ -10,11 +10,13 @@ public class SearchResultsPage extends BasePage {
     @FindBy(xpath = "//h2[contains(text(),'Owners')]")
     private WebElement pageTitle;
 
-    @FindBy(css = ".glyphicon-triangle-right")
+    @FindBy(css = ".fa.fa-step-forward")
     private WebElement nextPage;
 
-    @FindBy(css = ".glyphicon-triangle-left")
+    @FindBy(css = ".fa.fa-step-backward")
     private WebElement previewsPage;
+
+    String link = "/owners?page=";
 
     public void waitForPageTitle() {
         wait.until(ExpectedConditions.visibilityOf(pageTitle));
@@ -49,12 +51,11 @@ public class SearchResultsPage extends BasePage {
     }
 
     public int getPageByNumber(int num) {
-        int result = driver.findElements(By.linkText("" + num)).size();
-        return result;
+        return driver.findElements(By.linkText(link + num)).size();
     }
 
     public void clickOnPageByNumber(int num) {
-        driver.findElement(By.linkText("" + num)).click();
+        driver.findElement(By.linkText(link + num)).click();
     }
 
     public boolean isPaginationDisplayed() {
@@ -66,7 +67,7 @@ public class SearchResultsPage extends BasePage {
     }
 
     public boolean isPageNumberDisplayed(int num) {
-        if (driver.findElements(By.linkText("" + num)).size() == 0) {
+        if (driver.findElements(By.linkText(link + num)).size() == 0) {
             return false;
         }  else {
             return true;

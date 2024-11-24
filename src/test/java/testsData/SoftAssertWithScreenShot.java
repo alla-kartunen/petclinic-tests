@@ -5,7 +5,7 @@ import org.testng.asserts.IAssert;
 import org.testng.asserts.SoftAssert;
 import tests.BaseTest;
 
-public class CustomSoftAssert extends SoftAssert {
+public class SoftAssertWithScreenShot extends SoftAssert {
 
     @Override
     public void onAssertFailure(IAssert<?> assertCommand, AssertionError ex) {

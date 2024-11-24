@@ -66,7 +66,7 @@ public class AddOwnerTest extends BaseTest {
         getOwnerPageById(ownerId);
 
         ownerInformationSteps.waitForPageTitle()
-                                .verifyThatOwnerHaveNoPets();
+                                .verifyThatOwnerHasNoPets();
         ownersManager.deleteOwner(ownerId);
         ownerInformationSteps.endOfSoftAssert();
 

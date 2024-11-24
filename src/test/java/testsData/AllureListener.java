@@ -27,7 +27,7 @@ public class AllureListener implements ITestListener {
 
     @Override
     public void onStart(ITestContext iTestContext) {
-        iTestContext.setAttribute("WebDriver", BaseTest.getDriver());
+        if (BaseTest.getDriver() != null) { iTestContext.setAttribute("WebDriver", BaseTest.getDriver()); }
     }
 
     @Override

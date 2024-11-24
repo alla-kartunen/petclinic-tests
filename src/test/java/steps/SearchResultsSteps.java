@@ -1,23 +1,24 @@
 package steps;
 
+import io.qameta.allure.Step;
 import org.testng.SkipException;
 import org.testng.asserts.SoftAssert;
 import pages.SearchResultsPage;
 import tests.managers.OwnersManager;
 import tests.objectsAndMappers.Owner;
-import testsData.CustomSoftAssert;
+import testsData.SoftAssertWithScreenShot;
 
 import java.util.ArrayList;
 
 public class SearchResultsSteps {
 
     private SearchResultsPage searchResultsPage = new SearchResultsPage();
-    private CustomSoftAssert customSoftAssert = new CustomSoftAssert();
+    private SoftAssertWithScreenShot softAssertWithScreenShoot = new SoftAssertWithScreenShot();
     private SoftAssert softAssert = new SoftAssert();
     private OwnersManager ownersManager = new OwnersManager();
 
+    @Step("Verify list of Owners on search result page")
     public SearchResultsSteps verifyListOfOwnersOnSearchPage(ArrayList<Owner> ownersList) {
-
         searchResultsPage.waitForPageTitle();
 
         int page = 1;
@@ -37,18 +38,19 @@ public class SearchResultsSteps {
             Owner owner = ownersList.get(i - 1);
             String expectedFullOwnerName = (owner.getFirstName() + " " + owner.getLastName());
 
-            softAssert.assertEquals(searchResultsPage.getOwnerNameByIndex(j), expectedFullOwnerName,
+            softAssertWithScreenShoot.assertEquals(searchResultsPage.getOwnerNameByIndex(j), expectedFullOwnerName,
                     "On page " + page + ", line " + (j) + " incorrect full name:");
-            softAssert.assertEquals(searchResultsPage.getOwnerAddressByIndex(j), owner.getAddress(),
+            softAssertWithScreenShoot.assertEquals(searchResultsPage.getOwnerAddressByIndex(j), owner.getAddress(),
                     "On page " + page + ", line " + (j) + " incorrect address:");
-            softAssert.assertEquals(searchResultsPage.getOwnerCityByIndex(j), owner.getCity(),
+            softAssertWithScreenShoot.assertEquals(searchResultsPage.getOwnerCityByIndex(j), owner.getCity(),
                     "On page " + page + ", line " + (j) + " incorrect city:");
-            softAssert.assertEquals(searchResultsPage.getOwnerTelephoneByIndex(j), owner.getTelephone(),
+            softAssertWithScreenShoot.assertEquals(searchResultsPage.getOwnerTelephoneByIndex(j), owner.getTelephone(),
                     "On page " + page + ", line " + (j) + " incorrect telephone:");
         }
         return this;
     }
 
+    @Step("Delete Owners list from DB")
     public SearchResultsSteps deleteOwnersListFromDB(ArrayList<Owner> ownersList) {
         OwnersManager ownersManager = new OwnersManager();
         int listLength = ownersList.size();
@@ -60,6 +62,7 @@ public class SearchResultsSteps {
         return this;
     }
 
+    @Step("Verify quantity of Owners")
     public SearchResultsSteps verifyQuantityOfOwners(ArrayList<Owner> ownersList) {
         int listLength = ownersList.size();
 
@@ -70,6 +73,7 @@ public class SearchResultsSteps {
         return this;
     }
 
+    @Step("Verify page numbers")
     public SearchResultsSteps verifyPageNumbers(ArrayList<Owner> ownersList) {
 
         int pagination = getPaginationSize(ownersList);
@@ -81,38 +85,38 @@ public class SearchResultsSteps {
                 int count = searchResultsPage.getPageByNumber(i);
 
                 if (count != 1) {
-                    customSoftAssert.assertEquals(count, 1,
-                            "Incorrect pagination. Elements with link " + i + ": " + count);
+                    softAssertWithScreenShoot.assertEquals(count, 1,
+                            "Incorrect pagination. Quantity of elements with link '" + i + "': " + count);
                 }
             }
             int next = searchResultsPage.getPageByNumber(pagination + 1);
-            customSoftAssert.assertEquals(next, 0,
-                    "Incorrect pagination. For pagination size " + pagination +
+            softAssertWithScreenShoot.assertEquals(next, 0,
+                    "Incorrect pagination. For pagination size = " + pagination +
                             " there's " + (pagination + 1) + "page");
         } else if (pagination == 1) {
             boolean result = searchResultsPage.isPaginationDisplayed();
 
-            customSoftAssert.assertEquals(result, false,
-                    "Search result page for less than 6 search result contains pagination!");
+            softAssertWithScreenShoot.assertEquals(result, false,
+                    "Search result page for less then 6 search result contains pagination!");
         }
         return this;
     }
 
+    @Step("Verify page navigation by number")
     public SearchResultsSteps verifyPageNavigationByNumber(ArrayList<Owner> ownersList) {
-
         int pagination = getPaginationSize(ownersList);
 
         if (pagination > 1) {
             for (int i = 2; i <= pagination; i++) {
                 int count = searchResultsPage.getPageByNumber(i);
 
-                customSoftAssert.assertEquals(count, 1,
+                softAssertWithScreenShoot.assertEquals(count, 1,
                         "Unexpected quantity of pages with number " + i);
 
                 // If this is a last page, verify there isn't next page
                 if (i == pagination) {
                     boolean result = searchResultsPage.isPageNumberDisplayed(pagination + 1);
-                    customSoftAssert.assertEquals(result, false,
+                    softAssertWithScreenShoot.assertEquals(result, false,
                             "There's extra page number on the last page of search results!" +
                                     "Expected number of pages: " + pagination + ".\n");
                 }
@@ -128,8 +132,8 @@ public class SearchResultsSteps {
         return this;
     }
 
+    @Step("Verify navigation arrows")
     public SearchResultsSteps verifyNavigationArrows(ArrayList<Owner> ownersList) {
-
         int pagination = getPaginationSize(ownersList);
 
         if (pagination > 1) {
@@ -137,7 +141,7 @@ public class SearchResultsSteps {
                 // If this is the first page, verify that previous arrow isn't active
                 if (i == 1) {
                     boolean result = searchResultsPage.isArrowInactive("Previous");
-                    customSoftAssert.assertEquals(result, true,
+                    softAssertWithScreenShoot.assertEquals(result, true,
                             "Arrow \"Previous\" is active on the first page of search results!");
                 }
 
@@ -146,7 +150,7 @@ public class SearchResultsSteps {
                 // If this is the last page, verify that next arrow isn't active
                 if (i == (pagination - 1)) {
                     boolean result = searchResultsPage.isArrowInactive("Next");
-                    customSoftAssert.assertEquals(result, true,
+                    softAssertWithScreenShoot.assertEquals(result, true,
                             "Arrow \"Next\" is active on the last page of search results!" +
                                     "Expected total pages: " + pagination + ".\n");
                 }
@@ -161,10 +165,9 @@ public class SearchResultsSteps {
         return this;
     }
 
-    public boolean verifyThatLastnameIsUnique(String lastname) {
-        int lastnameCount = ownersManager.countOwnersWithLastname(lastname);
-
-        if (lastnameCount == 0) {
+    public boolean verifyThatLastnameIsUnique(String lastName) {
+        int lastNameCount = ownersManager.countOwnersWithLastname(lastName);
+        if (lastNameCount == 1) {
             return true;
         }
         return false;
@@ -181,13 +184,16 @@ public class SearchResultsSteps {
         return pagination;
     }
 
+    @Step("Summarizing soft assertion")
     public SearchResultsSteps endOfSoftAssert() {
         softAssert.assertAll();
+        softAssertWithScreenShoot.assertAll();
         return this;
     }
 
+    @Step("Summarizing soft assertion")
     public SearchResultsSteps endOfCustomSoftAssert() {
-        customSoftAssert.assertAll();
+        softAssertWithScreenShoot.assertAll();
         return this;
     }
 
