@@ -10,8 +10,12 @@ public interface PetsManagerInterface {
 
     void deletePet(int id);
 
+    void deletePetByOwner(String ownerLastName);
+
     List<Pet> getNewPetByName(String name);
 
     List<Pet> getPetById(int petId);
+
+    void checkPetByOwner(String ownerLastName);
 
 }

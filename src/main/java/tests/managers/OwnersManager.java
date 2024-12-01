@@ -13,9 +13,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class OwnersManager implements OwnersManagerInterface {
+import static tests.managers.BaseManager.Log.*;
 
-	private Logger logger = LogManager.getLogger(OwnersManager.class);;
+public class OwnersManager extends BaseManager implements OwnersManagerInterface {
+
+	private Logger logger = LogManager.getLogger(OwnersManager.class);
+	private PetsManager petsManager = new PetsManager();
 
 	private JdbcTemplate jdbcTemplate = new JdbcTemplate(
 		DataSourceProvider.INSTANCE.getDataSource()
@@ -30,6 +33,7 @@ public class OwnersManager implements OwnersManagerInterface {
 		map.put("city", owner.getCity());
 		map.put("telephone", owner.getTelephone());
 
+		log(CREATE_OWNER, map);
 		int id = new SimpleJdbcInsert(jdbcTemplate)
 						.withTableName("owners")
 						.usingGeneratedKeyColumns("id")
@@ -40,42 +44,39 @@ public class OwnersManager implements OwnersManagerInterface {
 
 	@Override
 	public void deleteOwner(int id) {
-		logger.info("DELETE FROM owners WHERE id = " + id);
-		int count = jdbcTemplate.update("DELETE FROM owners WHERE id = ?", id);
-		logger.info("Deleted " + count + " records");
+		log(DELETE_OWNER, "id = " + id);
+		log(COUNT_DELETED, jdbcTemplate.update("DELETE FROM owners WHERE id = ?", id));
 	}
 
 	@Override
 	public void deleteOwner(String lastName) {
-		logger.info("DELETE FROM owners WHERE last_name = '" + lastName + "'");
-		int count = jdbcTemplate.update("DELETE FROM owners WHERE last_name = ?", lastName);
-		logger.info("Deleted " + count + " records");
+		petsManager.checkPetByOwner(lastName);
+		log(DELETE_OWNER, "last_name = '" + lastName + "'");
+		log(COUNT_DELETED, jdbcTemplate.update("DELETE FROM owners WHERE last_name = ?", lastName));
 	}
 
 	@Override
 	public void deleteOwner(ArrayList<Owner> ownersList) {
 		String idList = getIdList(ownersList);
-		String updateString = "DELETE FROM owners WHERE id in (" + idList + ")";
-		logger.info(updateString);
-		int count = jdbcTemplate.update(updateString);
-		logger.info("Deleted " + count + " records");
+		log(DELETE_OWNER, "id in (" + idList + ")");
+		log(COUNT_DELETED, jdbcTemplate.update("DELETE FROM owners WHERE id in (" + idList + ")"));
 	}
 
 	@Override
 	public List<Owner> getNewOwnerByLastName(String lastName) {
-		logger.info("SELECT * FROM owners WHERE last_name = '" + lastName + "'");
+		log(SELECT_OWNER, "last_name = '" + lastName + "'");
 		List<Owner> list = jdbcTemplate.query("SELECT * FROM owners WHERE last_name = ? ORDER BY id DESC",
 				new OwnersRowMapper(), new Object[] {lastName});
-		logger.info("Selected " + list.size() + " owners");
+		log(COUNT_SELECTED, list.size());
 		return list;
 	}
 
 	@Override
 	public List<Owner> getOwnerById(int ownerId) {
-		logger.info("SELECT * FROM owners WHERE id = " + ownerId);
+		log(SELECT_OWNER, "id = " + ownerId);
 		List<Owner> list = jdbcTemplate.query("SELECT * FROM owners WHERE id = ?",
 				new OwnersRowMapper(), new Object[] {ownerId});
-		logger.info("Selected " + list.size() + " owners");
+		log(COUNT_SELECTED, list.size());
 		return list;
 	}
 
