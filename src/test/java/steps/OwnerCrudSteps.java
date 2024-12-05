@@ -5,13 +5,16 @@ import pages.OwnerCrudPage;
 import pages.OwnerInformationPage;
 import tests.objectsAndMappers.Owner;
 
-public class OwnerCrudSteps {
+import static steps.BaseStep.Log.FILL;
+
+public class OwnerCrudSteps extends BaseStep {
 
 	private OwnerCrudPage ownerCrudPage = new OwnerCrudPage();
 	private OwnerInformationPage ownerInformationPage = new OwnerInformationPage();
 
 	@Step("Add Owner")
 	public OwnerInformationSteps addOwner(Owner owner) {
+		log(FILL, "Add Owner");
 		ownerCrudPage.fillFirstNameField(owner.getFirstName());
 		ownerCrudPage.fillLastNameField(owner.getLastName());
 		ownerCrudPage.fillAddressField(owner.getAddress());
@@ -27,6 +30,7 @@ public class OwnerCrudSteps {
 		ownerCrudPage.waitForFirstNameField();
 		ownerCrudPage.clearAllFields();
 
+		log(FILL, "Edit Owner");
 		ownerCrudPage.fillFirstNameField(owner.getFirstName());
 		ownerCrudPage.fillLastNameField(owner.getLastName());
 		ownerCrudPage.fillAddressField(owner.getAddress());

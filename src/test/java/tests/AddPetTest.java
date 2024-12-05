@@ -7,14 +7,11 @@ import tests.objectsAndMappers.Owner;
 import tests.objectsAndMappers.Pet;
 import testsData.AllureListener;
 import testsData.GetData;
-import testsData.TestDataBuilder;
 
 import java.util.ArrayList;
 
 @Listeners({AllureListener.class})
 public class AddPetTest extends BaseTest {
-
-    private TestDataBuilder testData = new TestDataBuilder();
 
     @Test(dataProvider = "ownerWithPetsTestData", dataProviderClass = GetData.class, priority = 1)
     @Description("<b>Verify adding pet</b>")
@@ -22,26 +19,18 @@ public class AddPetTest extends BaseTest {
     @Epic("Pet CRUD")
     @Feature("Add pet")
     void addPetTest(ArrayList<Object> data) {
+        Owner owner = createOwnerInDb(data);
+        Pet pet = preparePetForCreate(data, owner);
 
-        Owner owner = testData.getOwner(data);
-
-        Pet pet = testData.getPet(data);
-        int ownerId = ownersManager.createOwnerAndGetId(owner);
-        pet.setOwnerID(ownerId);
-
-        getOwnerPageById(ownerId);
-
+        openOwnerPageById(owner.getId());
         ownerInformationSteps.clickAddPetButton();
+        petCrudSteps.addPet(owner, pet)
+                                .waitForPageTitle();
+        ownerInformationSteps.verifyThatPetWasCorrectlyAddedToDB(pet);
 
-        int petId = petCrudSteps.addPet(owner, pet)
-                                .waitForPageTitle()
-                                .verifyThatPetWasCorrectlyAddedToDB(pet, ownerId);
-
-        petsManager.deletePet(petId);
-        ownersManager.deleteOwner(ownerId);
+        clearTestData(owner.getId(), pet.getId());
         petCrudSteps.endOfSoftAssert();
         ownerInformationSteps.endOfSoftAssert();
-
     }
 
     @Test(dataProvider = "ownerWithPetsTestData", dataProviderClass = GetData.class, priority = 2)
@@ -50,22 +39,14 @@ public class AddPetTest extends BaseTest {
     @Epic("Pet CRUD")
     @Feature("Pet information")
     void verifyPetInformationTest(ArrayList<Object> data) {
+        Owner owner = createOwnerInDb(data);
+        Pet pet = createPetInDb(data, owner);
 
-        Owner owner = testData.getOwner(data);
-
-        Pet pet = testData.getPet(data);
-        int ownerId = ownersManager.createOwnerAndGetId(owner);
-        pet.setOwnerID(ownerId);
-        int petId = petsManager.createPetAndGetId(pet);
-
-        getOwnerPageById(ownerId);
-
+        openOwnerPageById(owner.getId());
         ownerInformationSteps.waitForPageTitle()
                                 .verifyPetDataOnOwnerInformationPage(pet);
 
-        petsManager.deletePet(petId);
-        ownersManager.deleteOwner(ownerId);
+        clearTestData(owner.getId(), pet.getId());
         ownerInformationSteps.endOfSoftAssert();
-
     }
 }

@@ -6,14 +6,11 @@ import org.testng.annotations.Test;
 import tests.objectsAndMappers.Owner;
 import testsData.AllureListener;
 import testsData.GetData;
-import testsData.TestDataBuilder;
 
 import java.util.ArrayList;
 
 @Listeners({AllureListener.class})
 public class AddOwnerTest extends BaseTest {
-
-    private TestDataBuilder testData = new TestDataBuilder();
 
     @Test(dataProvider = "ownerTestData", dataProviderClass = GetData.class, priority = 1)
     @Description("<b>Verify adding owner</b>")
@@ -21,16 +18,14 @@ public class AddOwnerTest extends BaseTest {
     @Epic("Owner CRUD")
     @Feature("Add owner")
     void addOwnerTest(ArrayList<Object> data) {
+        Owner owner = prepareOwnerForCreate(data);
 
-        Owner owner = testData.getOwner(data);
-
-        getFindOwnerPage();
-
-        int ownerId = findOwnerSteps.clickAddOwnerButton()
+        openFindOwnerPage();
+        findOwnerSteps.clickAddOwnerButton()
                                     .addOwner(owner)
-                                    .waitForPageTitle()
-                                    .verifyThatOwnerWasCorrectlyAddedToDB(owner);
-        ownersManager.deleteOwner(ownerId);
+                                    .waitForPageTitle();
+        ownerInformationSteps.verifyThatOwnerWasCorrectlyAddedToDB(owner);
+        clearTestData(owner.getId());
         ownerInformationSteps.endOfSoftAssert();
     }
 
@@ -40,35 +35,27 @@ public class AddOwnerTest extends BaseTest {
     @Epic("Owner CRUD")
     @Feature("Owner information")
     void verifyOwnerInformationTest(ArrayList<Object> data) {
+        Owner owner = createOwnerInDb(data);
 
-        Owner owner = testData.getOwner(data);
-        int ownerId = ownersManager.createOwnerAndGetId(owner);
-
-        getOwnerPageById(ownerId);
-
+        openOwnerPageById(owner.getId());
         ownerInformationSteps.waitForPageTitle()
-                                .verifyOwnerInformationOnPage(owner);
-        ownersManager.deleteOwner(ownerId);
+                                .verifyOwnerInformationPage(owner);
+        clearTestData(owner.getId());
         ownerInformationSteps.endOfSoftAssert();
-
     }
 
     @Test(dataProvider = "ownerTestData", dataProviderClass = GetData.class, priority = 3)
-    @Description("<b>Verify that owner without pet have clear pet information on owner's information page</b>")
+    @Description("<b>Verify that owner without pet has no pet information on owner's information page</b>")
     @Severity(SeverityLevel.NORMAL)
     @Epic("Owner CRUD")
     @Feature("Owner information")
     void verifyOwnerHaveNoPetsTest(ArrayList<Object> data) {
+        Owner owner = createOwnerInDb(data);
 
-        Owner owner = testData.getOwner(data);
-        int ownerId = ownersManager.createOwnerAndGetId(owner);
-
-        getOwnerPageById(ownerId);
-
+        openOwnerPageById(owner.getId());
         ownerInformationSteps.waitForPageTitle()
                                 .verifyThatOwnerHasNoPets();
-        ownersManager.deleteOwner(ownerId);
+        clearTestData(owner.getId());
         ownerInformationSteps.endOfSoftAssert();
-
     }
 }
