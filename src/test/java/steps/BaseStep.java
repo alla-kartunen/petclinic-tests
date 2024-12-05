@@ -22,6 +22,8 @@ public class BaseStep {
     protected enum Log {
         START_DATA_PREPARATION,
         END_DATA_PREPARATION,
+        START_CLEANING,
+        END_CLEANING,
         START_SEARCH,
         PROCESS,
         FILL
@@ -108,6 +110,29 @@ public class BaseStep {
         return pet;
     }
 
+    @Step("Clear test data. Delete owner from DB")
+    public void clearTestData(int ownerId) {
+        log(START_CLEANING, null);
+        ownersManager.deleteOwner(ownerId);
+        log(END_CLEANING, null);
+    }
+
+    @Step("Clear test data. Delete owner & pet from DB")
+    public void clearTestData(int ownerId, int petId) {
+        log(START_CLEANING, null);
+        petsManager.deletePet(petId);
+        ownersManager.deleteOwner(ownerId);
+        log(END_CLEANING, null);
+    }
+
+    @Step("Delete Owners list from DB")
+    public void clearTestData(ArrayList<Owner> ownersList) {
+        log(START_CLEANING, null);
+        OwnersManager ownersManager = new OwnersManager();
+        ownersManager.deleteOwner(ownersList);
+        log(END_CLEANING, null);
+    }
+
     public void verifyQuantityOfOwners(ArrayList<Owner> ownersList) {
         logger.info("Verify quantity of Owners for pagination test");
         if (ownersList.size() < 6) {
@@ -124,6 +149,12 @@ public class BaseStep {
                 break;
             case END_DATA_PREPARATION:
                 logger.info(separator + "{} data is prepared " + separator, object);
+                break;
+            case START_CLEANING:
+                logger.info(separator + " Start cleaning of test data " + separator);
+                break;
+            case END_CLEANING:
+                logger.info(separator + " End cleaning of test data " + separator);
                 break;
             case START_SEARCH:
                 logger.info("Start: \"Search Owner\" step. Search by last name = {}", object);

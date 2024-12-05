@@ -20,7 +20,6 @@ public abstract class BaseTest {
 
 	protected enum Log {
 		START_TEST, END_TEST,
-		START_CLEANING, END_CLEANING,
 		OPEN_PAGE
 	}
 
@@ -112,16 +111,15 @@ public abstract class BaseTest {
 	}
 
 	protected void clearTestData(int ownerId) {
-		log(START_CLEANING, null);
-		ownersManager.deleteOwner(ownerId);
-		log(END_CLEANING, null);
+		baseStep.clearTestData(ownerId);
 	}
 
 	protected void clearTestData(int ownerId, int petId) {
-		log(START_CLEANING, null);
-		petsManager.deletePet(petId);
-		ownersManager.deleteOwner(ownerId);
-		log(END_CLEANING, null);
+		baseStep.clearTestData(ownerId, petId);
+	}
+
+	public void clearTestData(ArrayList<Owner> ownersList) {
+		baseStep.clearTestData(ownersList);
 	}
 
 	protected void log(Log log, String object) {
@@ -131,12 +129,6 @@ public abstract class BaseTest {
 				break;
 			case END_TEST:
 				logger.info(separator + "{} data is prepared " + separator, object);
-				break;
-			case START_CLEANING:
-				logger.info(separator + " Start cleaning of test data " + separator);
-				break;
-			case END_CLEANING:
-				logger.info(separator + " End cleaning of test data " + separator);
 				break;
 			case OPEN_PAGE:
 				logger.info("Open {}", object);
