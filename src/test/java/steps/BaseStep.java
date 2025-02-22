@@ -74,8 +74,10 @@ public class BaseStep {
         log(START_DATA_PREPARATION, "Owner");
         ArrayList<Owner> ownersList = testData.prepareTestData(
                                                 getData.ownersWithTheSameLastNameData(testCase));
-        if (testCase.contains("Pagination") || testCase.contains("Navigation")) {
-            verifyQuantityOfOwners(ownersList);
+        if (testCase.contains("NoPagination")) {
+            verifyQuantityOfOwners(ownersList, false);
+        } else if (testCase.contains("Pagination") || testCase.contains("Navigation")) {
+            verifyQuantityOfOwners(ownersList, true);
         }
         log(END_DATA_PREPARATION, "Owner");
         return ownersList;
@@ -133,11 +135,22 @@ public class BaseStep {
         log(END_CLEANING, null);
     }
 
-    public void verifyQuantityOfOwners(ArrayList<Owner> ownersList) {
+    public void verifyQuantityOfOwners(ArrayList<Owner> ownersList, boolean forPagination) {
         logger.info("Verify quantity of Owners for pagination test");
-        if (ownersList.size() < 6) {
-            throw new SkipException("Incorrect data in Excel file! " +
-                    "There must be more then 6 owners for search pagination test.");
+        if (forPagination) {
+            if (ownersList.size() < 6) {
+                String message = "Incorrect data in Excel file! " +
+                        "There must be more than 6 owners for search pagination test.";
+                logger.error(message);
+                throw new SkipException(message);
+            }
+        } else {
+            if (ownersList.size() > 5) {
+                String message = "Incorrect data in Excel file! " +
+                        "There must be less than 6 owners to check displaying of only one search result page.";
+                logger.error(message);
+                throw new SkipException(message);
+            }
         }
         logger.info("Verification of Owner's quantity passed");
     }

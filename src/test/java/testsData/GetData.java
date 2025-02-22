@@ -1,5 +1,7 @@
 package testsData;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.testng.SkipException;
 import org.testng.annotations.DataProvider;
 
@@ -7,6 +9,8 @@ import java.lang.reflect.Method;
 import java.util.List;
 
 public class GetData {
+
+    private final Logger logger = LogManager.getLogger(this.getClass());
 
     @DataProvider
     public Object[][] ownerTestData(Method method) {
@@ -24,24 +28,22 @@ public class GetData {
         return excelReader.getArrayForDataProvider(rowsNo);
     }
 
-    public Object[][] ownersWithSameLastnameData(String methodName) {
+    public Object[][] ownersWithTheSameLastNameData(String methodName) {
         ExcelReader excelReader = new ExcelReader();
-        excelReader.setExcelFile("OwnersWithSameLastname");
+        excelReader.setExcelFile("OwnersWithSameLastName");
         List rowsNo = excelReader.getRowContains(methodName, 5);
         Object[][] allOwners = excelReader.getArrayForMultiDataProvider(rowsNo);
-        verifyThatOwnersHaveSameLastname(allOwners);
+        verifyThatOwnersHaveTheSameLastName(allOwners);
         return allOwners;
     }
 
-    public void verifyThatOwnersHaveSameLastname(Object[][] allOwners) {
+    public void verifyThatOwnersHaveTheSameLastName(Object[][] allOwners) {
         String lastName = allOwners[0][1].toString();
-
-        int listLength = allOwners.length;
-
-        for (int i = 1; i < listLength; i++) {
+        for (int i = 1; i < allOwners.length; i++) {
             if (!((allOwners[i][1]).equals(lastName))) {
-                throw new SkipException(
-                        "Incorrect data! Data in Excel file must contains same lastname for all owners in list.");
+                String message = "Incorrect data! Data in Excel file must contain same last name for all owners in list.";
+                logger.error(message);
+                throw new SkipException(message);
             }
         }
     }

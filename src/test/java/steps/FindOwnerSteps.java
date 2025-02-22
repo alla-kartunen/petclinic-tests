@@ -1,32 +1,39 @@
 package steps;
 
 import io.qameta.allure.Step;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import pages.FindOwnersPage;
 import tests.objectsAndMappers.Owner;
 
 import java.util.ArrayList;
 
-public class FindOwnerSteps {
+import static steps.BaseStep.Log.START_SEARCH;
+
+public class FindOwnerSteps extends BaseStep {
 
     private FindOwnersPage findOwnersPage = new FindOwnersPage();
-    private SearchResultsSteps searchResultsSteps = new SearchResultsSteps();
+    protected final Logger logger = LogManager.getLogger(this.getClass());
 
     @Step("Search Owner")
-    public OwnerInformationSteps searchUniqueOwner(String lastName) {
+    public OwnerInformationSteps searchOwner(String lastName) {
+        log(START_SEARCH, lastName);
         findOwnersPage.fillSearchFieldAndPressSubmit(lastName);
         return new OwnerInformationSteps();
     }
 
     @Step("Open Add Owner page")
     public OwnerCrudSteps clickAddOwnerButton() {
+        logger.info("Start: add a new owner");
         findOwnersPage.pressAddOwnerButton();
         return new OwnerCrudSteps();
     }
 
     @Step("Search Owner")
-    public SearchResultsSteps searchMoreThanOneOwner(ArrayList<Owner> ownersList) {
-        Owner owner = ownersList.get(1);
-        findOwnersPage.fillSearchFieldAndPressSubmit(owner.getLastName());
+    public SearchResultsSteps searchOwner(ArrayList<Owner> ownersList) {
+        String lastName = ownersList.get(1).getLastName();
+        log(START_SEARCH, lastName);
+        findOwnersPage.fillSearchFieldAndPressSubmit(lastName);
         return new SearchResultsSteps();
     }
 

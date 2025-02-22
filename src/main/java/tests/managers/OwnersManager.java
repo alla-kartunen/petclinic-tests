@@ -81,7 +81,7 @@ public class OwnersManager extends BaseManager implements OwnersManagerInterface
 	}
 
 	@Override
-	public int countOwnersWithLastname(String lastName) {
+	public int countOwnersWithLastName(String lastName) {
 		logger.info("SELECT COUNT(*) as count FROM owners WHERE last_name = '" + lastName + "'");
 		int result = jdbcTemplate.queryForObject("SELECT COUNT(*) as count FROM owners WHERE last_name = ?",
 				new Object[] {lastName}, Integer.class);

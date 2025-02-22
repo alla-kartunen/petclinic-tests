@@ -12,7 +12,7 @@ public class FindOwnersPage extends BasePage {
 	@FindBy(xpath = "//button[@type='submit']")
 	private WebElement submitButton;
 
-	@FindBy(css = "a.btn-default")
+	@FindBy(css = "a.btn.btn-primary")
 	private WebElement addOwnerButton;
 
 	public void fillSearchFieldAndPressSubmit(String text) {

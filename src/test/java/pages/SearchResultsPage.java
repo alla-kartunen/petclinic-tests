@@ -4,6 +4,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.testng.TestException;
 
 public class SearchResultsPage extends BasePage {
 
@@ -16,30 +17,24 @@ public class SearchResultsPage extends BasePage {
     @FindBy(css = ".fa.fa-step-backward")
     private WebElement previewsPage;
 
-    String link = "/owners?page=";
-
     public void waitForPageTitle() {
         wait.until(ExpectedConditions.visibilityOf(pageTitle));
     }
 
     public String getOwnerNameByIndex(int num) {
-        String result = driver.findElement(By.xpath("//table//tr[" + num + "]/td[1]")).getText();
-        return result;
+        return driver.findElement(By.xpath("//table//tr[" + num + "]/td[1]")).getText();
     }
 
     public String getOwnerAddressByIndex(int num) {
-        String result = driver.findElement(By.xpath("//table//tr[" + num + "]/td[2]")).getText();
-        return result;
+        return driver.findElement(By.xpath("//table//tr[" + num + "]/td[2]")).getText();
     }
 
     public String getOwnerCityByIndex(int num) {
-        String result = driver.findElement(By.xpath("//table//tr[" + num + "]/td[3]")).getText();
-        return result;
+        return driver.findElement(By.xpath("//table//tr[" + num + "]/td[3]")).getText();
     }
 
     public String getOwnerTelephoneByIndex(int num) {
-        String result = driver.findElement(By.xpath("//table//tr[" + num + "]/td[4]")).getText();
-        return result;
+        return driver.findElement(By.xpath("//table//tr[" + num + "]/td[4]")).getText();
     }
 
     public void clickOnNextPageArrow() {
@@ -50,51 +45,41 @@ public class SearchResultsPage extends BasePage {
         previewsPage.click();
     }
 
-    public int getPageByNumber(int num) {
-        return driver.findElements(By.linkText(link + num)).size();
-    }
-
     public void clickOnPageByNumber(int num) {
-        driver.findElement(By.linkText(link + num)).click();
+        driver.findElement(By.xpath("//a[text()='" + num + "']")).click();
     }
 
     public boolean isPaginationDisplayed() {
-        if (driver.findElements(By.xpath("//span[contains(text(),'Pages:')]")).size() == 0) {
-            return false;
-        } else {
-            return true;
-        }
+        return !driver.findElements(By.xpath("//span[contains(text(),'Pages:')]")).isEmpty();
     }
 
     public boolean isPageNumberDisplayed(int num) {
-        if (driver.findElements(By.linkText(link + num)).size() == 0) {
-            return false;
-        }  else {
-            return true;
-        }
+        return !driver.findElements(By.xpath("//span[contains(text(),'Pages:')]/../span/span[contains(text(),'" + num + "')]")).isEmpty();
     }
 
-    public boolean isArrowInactive(String typeOfArrow) {
-        switch (typeOfArrow) {
-            case "First":
-                break;
-            case "Previous":
-                break;
-            case "Next":
-                break;
-            case "Last":
-                break;
-            default:
-                throw new NullPointerException(
-                        "Pagination's arrows names doesn't contains title \"" + typeOfArrow + "\"");
-        }
-
-        if (driver.findElements(By.xpath("//a[@title='" + typeOfArrow + "']")).size() == 0) {
-            return true;
-        }  else {
-            return false;
-        }
+    public boolean isPageLinkDisplayed(int num) {
+        return !driver.findElements(By.xpath("//a[text()='" + num + "']")).isEmpty();
     }
 
+    public boolean isPageLinkNotDisplayed(int num) {
+        return driver.findElements(By.xpath("//a[text()='" + num + "']")).isEmpty();
+    }
+
+    public boolean isArrowDisplayed(String typeOfArrow) {
+        checkTypeOfArrow(typeOfArrow);
+        return !driver.findElements(By.xpath("//span[contains(text(),'Pages:')]/../span/span[@title='" + typeOfArrow + "']")).isEmpty();
+    }
+
+    public boolean isArrowLinkDisplayed(String typeOfArrow) {
+        checkTypeOfArrow(typeOfArrow);
+        return !driver.findElements(By.xpath("//a[@title='" + typeOfArrow + "']")).isEmpty();
+    }
+
+    private void checkTypeOfArrow(String typeOfArrow) {
+        if (!(typeOfArrow.equals("First") || (typeOfArrow.equals("Previous"))||
+                (typeOfArrow.equals("Next"))|| (typeOfArrow.equals("Last"))))
+                throw new TestException(
+                        "Pagination arrow with title \"" + typeOfArrow + "\" doesn't exist");
+    }
 
 }

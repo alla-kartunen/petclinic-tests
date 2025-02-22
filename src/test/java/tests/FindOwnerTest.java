@@ -1,12 +1,9 @@
 package tests;
 
 import io.qameta.allure.*;
-import org.testng.SkipException;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 import tests.objectsAndMappers.Owner;
-import testsData.AllureListener;
-import testsData.TestDataBuilder;
 import testsData.GetData;
 
 import java.util.ArrayList;
@@ -14,122 +11,91 @@ import java.util.ArrayList;
 @Listeners({AllureListener.class})
 public class FindOwnerTest extends BaseTest {
 
-    private TestDataBuilder testData = new TestDataBuilder();
-
     @Test(dataProvider = "ownerTestData", dataProviderClass = GetData.class, priority = 1)
-    @Description("<b>Verify finding owner with unique lastname</b>")
+    @Description("<b>Verify finding owner with unique last name</b>")
     @Severity(SeverityLevel.BLOCKER)
     @Epic("Search")
-    @Feature("Find owners with unique lastname")
+    @Feature("Find owner with unique last name")
     void findUniqueOwnerTest(ArrayList<Object> data) {
+        Owner owner = createOwnerInDb(data);
 
-        getFindOwnerPage();
+        openFindOwnerPage();
+        findOwnerSteps.searchOwner(owner.getLastName());
+        ownerInformationSteps.verifyOwnerInformationPage(owner);
 
-        Owner owner = testData.getOwner(data);
-
-        int ownerID = ownersManager.createOwnerAndGetId(owner);
-
-        boolean isUniqueLastname = searchResultsSteps.verifyThatLastnameIsUnique(owner.getLastName());
-
-        if (isUniqueLastname == false) {
-            throw new SkipException("Incorrect data in Excel file! Owner with such lastname already exist in database.");
-        }
-
-        findOwnerSteps.searchUniqueOwner(owner.getLastName())
-                        .verifyOwnerInformationOnPage(owner);
-
-        ownersManager.deleteOwner(ownerID);
+        clearTestData(owner.getId());
         ownerInformationSteps.endOfSoftAssert();
-
-    }
-
-    @Test(priority = 1)
-    @Description("<b>Verify finding owners with same lastname and their data</b>")
-    @Severity(SeverityLevel.BLOCKER)
-    @Epic("Search")
-    @Feature("Find owners with same lastname")
-    void findMoreThanOneOwnerTest() {
-
-        getFindOwnerPage();
-
-        GetData getData = new GetData();
-
-        Object[][] allOwners = getData.ownersWithSameLastnameData("findMoreThanOneOwnerTest");
-
-        ArrayList<Owner> ownersList = testData.prepareSearchData(allOwners);
-
-        findOwnerSteps.searchMoreThanOneOwner(ownersList)
-                        .verifyListOfOwnersOnSearchPage(ownersList)
-                        .deleteOwnersListFromDB(ownersList)
-                        .endOfSoftAssert();
-
     }
 
     @Test(priority = 2)
+    @Description("<b>Verify finding owners with the same last name and their data</b>")
+    @Severity(SeverityLevel.BLOCKER)
+    @Epic("Search")
+    @Feature("Find owners with the same last name")
+    void findMoreThanOneOwnerTest() {
+        ArrayList<Owner> ownersList = createListOfOwnersInDb("findMoreThanOneOwnerTest");
+
+        openFindOwnerPage();
+        findOwnerSteps.searchOwner(ownersList);
+        searchResultsSteps.verifyListOfOwnersOnSearchPage(ownersList);
+        clearTestData(ownersList);
+        searchResultsSteps.endOfSoftAssert();
+    }
+
+    @Test(priority = 3)
+    @Description("<b>Verify no pagination on search result page</b>")
+    @Severity(SeverityLevel.CRITICAL)
+    @Epic("Search")
+    @Feature("Verify search pagination")
+    void verifyNoPaginationTest() {
+        ArrayList<Owner> ownersList = createListOfOwnersInDb("verifyNoPaginationTest");
+
+        openFindOwnerPage();
+        findOwnerSteps.searchOwner(ownersList);
+        searchResultsSteps.verifyPageNumbers(ownersList);
+        clearTestData(ownersList);
+    }
+
+    @Test(priority = 4)
     @Description("<b>Verify numbers of page on search result page</b>")
     @Severity(SeverityLevel.CRITICAL)
     @Epic("Search")
     @Feature("Verify search pagination")
     void verifySearchPaginationNumbersTest() {
+        ArrayList<Owner> ownersList = createListOfOwnersInDb("verifySearchPaginationNumbersTest");
 
-        getFindOwnerPage();
-
-        GetData getData = new GetData();
-
-        Object[][] allOwners = getData.ownersWithSameLastnameData("verifySearchPaginationNumbersTest");
-
-        ArrayList<Owner> ownersList = testData.prepareSearchData(allOwners);
-
-        findOwnerSteps.searchMoreThanOneOwner(ownersList)
-                        .verifyQuantityOfOwners(ownersList)
-                        .verifyPageNumbers(ownersList)
-                        .deleteOwnersListFromDB(ownersList)
-                        .endOfCustomSoftAssert();
-
+        openFindOwnerPage();
+        findOwnerSteps.searchOwner(ownersList);
+        searchResultsSteps.verifyPageNumbers(ownersList);
+        clearTestData(ownersList);
     }
 
-    @Test(priority = 2)
+    @Test(priority = 5)
     @Description("<b>Verify search pagination by number of page</b>")
     @Severity(SeverityLevel.CRITICAL)
     @Epic("Search")
     @Feature("Verify search pagination")
-    void verifyClickOnSearchPageNavigatorTest() {
+    void verifyPageNavigationByNumberTest() {
+        ArrayList<Owner> ownersList = createListOfOwnersInDb("verifyPageNavigationByNumberTest");
 
-        getFindOwnerPage();
-
-        GetData getData = new GetData();
-
-        Object[][] allOwners = getData.ownersWithSameLastnameData("verifyClickOnSearchPageNavigatorTest");
-
-        ArrayList<Owner> ownersList = testData.prepareSearchData(allOwners);
-
-        findOwnerSteps.searchMoreThanOneOwner(ownersList)
-                        .verifyQuantityOfOwners(ownersList)
-                        .verifyPageNavigationByNumber(ownersList)
-                        .deleteOwnersListFromDB(ownersList)
-                        .endOfCustomSoftAssert();
+        openFindOwnerPage();
+        findOwnerSteps.searchOwner(ownersList);
+        searchResultsSteps.verifyPageNavigationByNumber(ownersList);
+        clearTestData(ownersList);
     }
 
-    @Test(priority = 2)
+    @Test(priority = 6)
     @Description("<b>Verify search pagination by arrow</b>")
     @Severity(SeverityLevel.CRITICAL)
     @Epic("Search")
     @Feature("Verify search pagination")
-    void verifyClickOnSearchPageArrowTest() {
+    void verifyPageNavigationByArrowTest() {
+        ArrayList<Owner> ownersList = createListOfOwnersInDb("verifyPageNavigationByArrowTest");
 
-        getFindOwnerPage();
-
-        GetData getData = new GetData();
-
-        Object[][] allOwners = getData.ownersWithSameLastnameData("verifyClickOnSearchPageArrowTest");
-
-        ArrayList<Owner> ownersList = testData.prepareSearchData(allOwners);
-
-        findOwnerSteps.searchMoreThanOneOwner(ownersList)
-                        .verifyQuantityOfOwners(ownersList)
-                        .verifyNavigationArrows(ownersList)
-                        .deleteOwnersListFromDB(ownersList)
-                        .endOfCustomSoftAssert();
+        openFindOwnerPage();
+        findOwnerSteps.searchOwner(ownersList);
+        searchResultsSteps.verifyNavigationArrows(ownersList);
+        clearTestData(ownersList);
     }
 
 }

@@ -19,6 +19,6 @@ public interface OwnersManagerInterface {
 
 	List<Owner> getOwnerById(int ownerId);
 
-	int countOwnersWithLastname(String lastName);
+	int countOwnersWithLastName(String lastName);
 
 }

@@ -23,7 +23,7 @@ public class OwnerInformationPage extends BasePage {
 	@FindBy(xpath = "//table//tr[4]/td")
 	private WebElement ownerTelephone;
 
-	@FindBy(css = "a.btn-default")
+	@FindBy(css = "a.btn")
 	private WebElement editOwnerButton;
 
 	@FindBy(linkText = "Add New Pet")
