@@ -4,7 +4,7 @@
 
 ### About application
 
-The application is a database of a veterinary clinic. It contains a search by clients, functionality for adding, editing, viewing information about pets, their owners, and visits, and information about specialists.
+The Petclinic application is a database of a veterinary clinic. It contains a search by clients, functionality for adding, editing, and viewing information about pets, their owners, and visits, and information about specialists.
 
 Petclinic is a [Spring Boot](https://spring.io/guides/gs/spring-boot) application built using [Maven](https://spring.io/guides/gs/maven/) with MySQL database.
 
@@ -12,6 +12,7 @@ Petclinic is a [Spring Boot](https://spring.io/guides/gs/spring-boot) applicatio
 ### About test project
 
 The aim of the test project was to study the test's interaction with databases, using **JDBC template** and **Data-Driven** testing. There was no aim to covering the whole project with tests.
+Over time, the project became a sandbox for refactoring, demonstrating the capabilities of test automation.
 
 
 ### Test project's stack:
@@ -35,10 +36,10 @@ The aim of the test project was to study the test's interaction with databases, 
 
 ### Allure Report
 
-At the time the test's creation, the application had the search pagination bug, so some tests fail as expected.
+To generate a useful report, the Steps and Listener are used. In case of any failure (assert fails or exception appears), the screenshot is taken and attached to the report.
 
-The tests contain assertion for data from the Excel file, and one of the tests "edit pet" is skipped due to the wrong type of the pet for example.
+At the time the test's creation, the application had the search pagination bug and add pet bug, so some tests fail as expected.
 
-<img width="1042" alt="allure-screenshot" src="https://i.ibb.co/6rJKYs4/allure-1.png">
+<img width="1042" alt="allure-screenshot" src="allure_screenshot01.png">
 
-<img width="1042" alt="allure-screenshot" src="https://i.ibb.co/tXnHSpZ/allure-2.png">
+<img width="1042" alt="allure-screenshot" src="allure_screenshot02.png">

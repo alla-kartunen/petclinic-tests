@@ -1,5 +1,7 @@
 package dataproviders;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -16,13 +18,15 @@ public class ExcelReader {
     private XSSFWorkbook excelWBook;
     private XSSFCell cell;
 
+    protected final Logger logger = LogManager.getLogger(this.getClass());
+
     public void setExcelFile(String sheetName) {
         try {
             FileInputStream ExcelFile = new FileInputStream("src/test/resources/DataProviderExcel.xlsx");
             excelWBook = new XSSFWorkbook(ExcelFile);
             excelWSheet = excelWBook.getSheet(sheetName);
         } catch (Exception e) {
-            System.out.println("Exception " + e.getMessage());
+            logger.info("Exception " + e.getMessage());
         }
     }
 
