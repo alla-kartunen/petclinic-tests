@@ -1,4 +1,4 @@
-package tests.objectsAndMappers;
+package objects;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

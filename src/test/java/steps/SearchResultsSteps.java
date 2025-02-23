@@ -5,17 +5,15 @@ import org.testng.Assert;
 import org.testng.SkipException;
 import org.testng.asserts.SoftAssert;
 import pages.SearchResultsPage;
-import tests.objectsAndMappers.Owner;
-import testsData.SoftAssertWithScreenShot;
-import tests.objectsAndMappers.OwnerInfo;
+import objects.Owner;
+import objects.OwnerInfo;
 
 import java.util.ArrayList;
 
 public class SearchResultsSteps extends BaseStep {
 
     private SearchResultsPage searchResultsPage = new SearchResultsPage();
-    protected SoftAssertWithScreenShot uiSoftAssert = new SoftAssertWithScreenShot();
-    protected SoftAssert dbSoftAssert = new SoftAssert();
+    protected SoftAssert softAssert = new SoftAssert();
     private OwnerInfo ownerMapper = new OwnerInfo();
 
     @Step("Verify list of Owners on search result page")
@@ -135,8 +133,7 @@ public class SearchResultsSteps extends BaseStep {
     @Step("Summarizing soft assertion")
     public void endOfSoftAssert() {
         logger.info(separator + " TEST ENDS " + separator);
-        uiSoftAssert.assertAll();
-        dbSoftAssert.assertAll();
+        softAssert.assertAll();
     }
 
     private int getPaginationSize(ArrayList<Owner> ownersList) {

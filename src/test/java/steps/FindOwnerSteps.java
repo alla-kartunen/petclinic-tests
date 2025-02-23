@@ -4,7 +4,7 @@ import io.qameta.allure.Step;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import pages.FindOwnersPage;
-import tests.objectsAndMappers.Owner;
+import objects.Owner;
 
 import java.util.ArrayList;
 

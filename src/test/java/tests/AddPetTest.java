@@ -1,16 +1,13 @@
 package tests;
 
 import io.qameta.allure.*;
-import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
-import tests.objectsAndMappers.Owner;
-import tests.objectsAndMappers.Pet;
-import testsData.AllureListener;
-import testsData.GetData;
+import objects.Owner;
+import objects.Pet;
+import dataproviders.GetData;
 
 import java.util.ArrayList;
 
-@Listeners({AllureListener.class})
 public class AddPetTest extends BaseTest {
 
     @Test(dataProvider = "ownerWithPetsTestData", dataProviderClass = GetData.class, priority = 1)
@@ -23,14 +20,11 @@ public class AddPetTest extends BaseTest {
         Pet pet = preparePetForCreate(data, owner);
 
         openOwnerPageById(owner.getId());
-        ownerInformationSteps.clickAddPetButton();
-        petCrudSteps.addPet(owner, pet)
-                                .waitForPageTitle();
-        ownerInformationSteps.verifyThatPetWasCorrectlyAddedToDB(pet);
-
-        clearTestData(owner.getId(), pet.getId());
-        petCrudSteps.endOfSoftAssert();
-        ownerInformationSteps.endOfSoftAssert();
+        ownerInformationSteps.clickAddPetButton()
+                                .addPet(owner, pet)
+                                .waitForPageTitle()
+                                .verifyThatPetWasCorrectlyAddedToDB(pet)
+                                .endOfSoftAssert();
     }
 
     @Test(dataProvider = "ownerWithPetsTestData", dataProviderClass = GetData.class, priority = 2)
@@ -44,9 +38,7 @@ public class AddPetTest extends BaseTest {
 
         openOwnerPageById(owner.getId());
         ownerInformationSteps.waitForPageTitle()
-                                .verifyPetDataOnOwnerInformationPage(pet);
-
-        clearTestData(owner.getId(), pet.getId());
-        ownerInformationSteps.endOfSoftAssert();
+                                .verifyPetDataOnOwnerInformationPage(pet)
+                                .endOfSoftAssert();
     }
 }

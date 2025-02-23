@@ -1,9 +1,10 @@
 package steps;
 
 import io.qameta.allure.Step;
+import org.testng.Assert;
 import pages.PetCrudPage;
-import tests.objectsAndMappers.Owner;
-import tests.objectsAndMappers.Pet;
+import objects.Owner;
+import objects.Pet;
 
 import static steps.BaseStep.Log.*;
 
@@ -16,7 +17,7 @@ public class PetCrudSteps extends BaseStep {
 		petCrudPage.waitForPageTitle();
 		log(FILL,"Add Pet");
 		String fullOwnerName = owner.getFirstName() + " " + owner.getLastName();
-		uiSoftAssert.assertEquals(petCrudPage.getOwnerName(), fullOwnerName,
+		Assert.assertEquals(petCrudPage.getOwnerName(), fullOwnerName,
 			"Incorrect Owner's name on Add Pet page!");
 
 		petCrudPage.fillPetNameField(pet.getName());
@@ -42,7 +43,7 @@ public class PetCrudSteps extends BaseStep {
 	@Step("Summarizing soft assertion")
 	public void endOfSoftAssert() {
 		logger.info(separator + " TEST ENDS " + separator);
-		uiSoftAssert.assertAll();
+		softAssert.assertAll();
 	}
 
 }

@@ -3,7 +3,7 @@ package steps;
 import io.qameta.allure.Step;
 import pages.OwnerCrudPage;
 import pages.OwnerInformationPage;
-import tests.objectsAndMappers.Owner;
+import objects.Owner;
 
 import static steps.BaseStep.Log.FILL;
 

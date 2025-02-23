@@ -1,14 +1,12 @@
 package tests;
 
 import io.qameta.allure.*;
-import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
-import tests.objectsAndMappers.Owner;
-import testsData.GetData;
+import objects.Owner;
+import dataproviders.GetData;
 
 import java.util.ArrayList;
 
-@Listeners({AllureListener.class})
 public class FindOwnerTest extends BaseTest {
 
     @Test(dataProvider = "ownerTestData", dataProviderClass = GetData.class, priority = 1)
@@ -20,11 +18,9 @@ public class FindOwnerTest extends BaseTest {
         Owner owner = createOwnerInDb(data);
 
         openFindOwnerPage();
-        findOwnerSteps.searchOwner(owner.getLastName());
-        ownerInformationSteps.verifyOwnerInformationPage(owner);
-
-        clearTestData(owner.getId());
-        ownerInformationSteps.endOfSoftAssert();
+        findOwnerSteps.searchOwner(owner.getLastName())
+                        .verifyOwnerInformationPage(owner)
+                        .endOfSoftAssert();
     }
 
     @Test(priority = 2)
@@ -36,10 +32,9 @@ public class FindOwnerTest extends BaseTest {
         ArrayList<Owner> ownersList = createListOfOwnersInDb("findMoreThanOneOwnerTest");
 
         openFindOwnerPage();
-        findOwnerSteps.searchOwner(ownersList);
-        searchResultsSteps.verifyListOfOwnersOnSearchPage(ownersList);
-        clearTestData(ownersList);
-        searchResultsSteps.endOfSoftAssert();
+        findOwnerSteps.searchOwner(ownersList)
+                        .verifyListOfOwnersOnSearchPage(ownersList)
+                        .endOfSoftAssert();
     }
 
     @Test(priority = 3)
@@ -51,9 +46,8 @@ public class FindOwnerTest extends BaseTest {
         ArrayList<Owner> ownersList = createListOfOwnersInDb("verifyNoPaginationTest");
 
         openFindOwnerPage();
-        findOwnerSteps.searchOwner(ownersList);
-        searchResultsSteps.verifyPageNumbers(ownersList);
-        clearTestData(ownersList);
+        findOwnerSteps.searchOwner(ownersList)
+                        .verifyPageNumbers(ownersList);
     }
 
     @Test(priority = 4)
@@ -65,9 +59,8 @@ public class FindOwnerTest extends BaseTest {
         ArrayList<Owner> ownersList = createListOfOwnersInDb("verifySearchPaginationNumbersTest");
 
         openFindOwnerPage();
-        findOwnerSteps.searchOwner(ownersList);
-        searchResultsSteps.verifyPageNumbers(ownersList);
-        clearTestData(ownersList);
+        findOwnerSteps.searchOwner(ownersList)
+                        .verifyPageNumbers(ownersList);
     }
 
     @Test(priority = 5)
@@ -79,9 +72,8 @@ public class FindOwnerTest extends BaseTest {
         ArrayList<Owner> ownersList = createListOfOwnersInDb("verifyPageNavigationByNumberTest");
 
         openFindOwnerPage();
-        findOwnerSteps.searchOwner(ownersList);
-        searchResultsSteps.verifyPageNavigationByNumber(ownersList);
-        clearTestData(ownersList);
+        findOwnerSteps.searchOwner(ownersList)
+                        .verifyPageNavigationByNumber(ownersList);
     }
 
     @Test(priority = 6)
@@ -93,9 +85,8 @@ public class FindOwnerTest extends BaseTest {
         ArrayList<Owner> ownersList = createListOfOwnersInDb("verifyPageNavigationByArrowTest");
 
         openFindOwnerPage();
-        findOwnerSteps.searchOwner(ownersList);
-        searchResultsSteps.verifyNavigationArrows(ownersList);
-        clearTestData(ownersList);
+        findOwnerSteps.searchOwner(ownersList)
+                        .verifyNavigationArrows(ownersList);
     }
 
 }

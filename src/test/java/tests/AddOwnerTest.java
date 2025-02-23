@@ -1,15 +1,12 @@
 package tests;
 
 import io.qameta.allure.*;
-import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
-import tests.objectsAndMappers.Owner;
-import testsData.AllureListener;
-import testsData.GetData;
+import objects.Owner;
+import dataproviders.GetData;
 
 import java.util.ArrayList;
 
-@Listeners({AllureListener.class})
 public class AddOwnerTest extends BaseTest {
 
     @Test(dataProvider = "ownerTestData", dataProviderClass = GetData.class, priority = 1)
@@ -22,11 +19,10 @@ public class AddOwnerTest extends BaseTest {
 
         openFindOwnerPage();
         findOwnerSteps.clickAddOwnerButton()
-                                    .addOwner(owner)
-                                    .waitForPageTitle();
-        ownerInformationSteps.verifyThatOwnerWasCorrectlyAddedToDB(owner);
-        clearTestData(owner.getId());
-        ownerInformationSteps.endOfSoftAssert();
+                        .addOwner(owner)
+                        .waitForPageTitle()
+                        .verifyThatOwnerWasCorrectlyAddedToDB(owner)
+                        .endOfSoftAssert();
     }
 
     @Test(dataProvider = "ownerTestData", dataProviderClass = GetData.class, priority = 2)
@@ -39,9 +35,8 @@ public class AddOwnerTest extends BaseTest {
 
         openOwnerPageById(owner.getId());
         ownerInformationSteps.waitForPageTitle()
-                                .verifyOwnerInformationPage(owner);
-        clearTestData(owner.getId());
-        ownerInformationSteps.endOfSoftAssert();
+                                .verifyOwnerInformationPage(owner)
+                                .endOfSoftAssert();
     }
 
     @Test(dataProvider = "ownerTestData", dataProviderClass = GetData.class, priority = 3)
@@ -54,8 +49,7 @@ public class AddOwnerTest extends BaseTest {
 
         openOwnerPageById(owner.getId());
         ownerInformationSteps.waitForPageTitle()
-                                .verifyThatOwnerHasNoPets();
-        clearTestData(owner.getId());
-        ownerInformationSteps.endOfSoftAssert();
+                                .verifyThatOwnerHasNoPets()
+                                .endOfSoftAssert();
     }
 }

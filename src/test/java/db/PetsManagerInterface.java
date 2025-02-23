@@ -1,6 +1,6 @@
-package tests.managers;
+package db;
 
-import tests.objectsAndMappers.Pet;
+import objects.Pet;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package tests;
+package dataproviders;
 
 import com.mysql.cj.jdbc.MysqlDataSource;
 

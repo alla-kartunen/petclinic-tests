@@ -1,21 +1,22 @@
 package tests;
 
+import listeners.AllureListener;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
+import org.testng.annotations.*;
 import steps.*;
-import tests.managers.OwnersManager;
-import tests.managers.PetsManager;
-import tests.objectsAndMappers.Owner;
-import tests.objectsAndMappers.Pet;
+import db.OwnersManager;
+import db.PetsManager;
+import objects.Owner;
+import objects.Pet;
 
 import static tests.BaseTest.Log.*;
 import java.util.ArrayList;
 
+@Listeners({AllureListener.class})
 public abstract class BaseTest {
 
 	protected enum Log {
@@ -31,15 +32,15 @@ public abstract class BaseTest {
 	private final String ownerFindPage = host + "/owners/find";
 	private final String separator = "-------------------------";
 
-	BaseStep baseStep;
-	FindOwnerSteps findOwnerSteps;
-	OwnerInformationSteps ownerInformationSteps;
-	OwnerCrudSteps ownerCrudSteps;
-	SearchResultsSteps searchResultsSteps;
-	PetCrudSteps petCrudSteps;
+	protected BaseStep baseStep;
+	protected FindOwnerSteps findOwnerSteps;
+	protected OwnerInformationSteps ownerInformationSteps;
+	protected OwnerCrudSteps ownerCrudSteps;
+	protected SearchResultsSteps searchResultsSteps;
+	protected PetCrudSteps petCrudSteps;
 
-	OwnersManager ownersManager;
-	PetsManager petsManager;
+	protected OwnersManager ownersManager;
+	protected PetsManager petsManager;
 
 	public static synchronized WebDriver getDriver() {
 		return tdriver.get();
@@ -51,6 +52,7 @@ public abstract class BaseTest {
 		driver = new ChromeDriver();
 		driver.manage().window().maximize();
 		tdriver.set(driver);
+		AllureListener.setDriver(driver);
 
 		baseStep = new BaseStep();
 		findOwnerSteps = new FindOwnerSteps();
@@ -63,6 +65,11 @@ public abstract class BaseTest {
 		petsManager = new PetsManager();
 
 		return getDriver();
+	}
+
+	@AfterMethod
+	public void clearTestData() {
+		baseStep.clearTestData();
 	}
 
     @AfterClass
@@ -108,18 +115,6 @@ public abstract class BaseTest {
 
 	protected Pet createPetInDb(ArrayList<Object> data, Owner owner) {
 		return baseStep.createPetInDb(data, owner);
-	}
-
-	protected void clearTestData(int ownerId) {
-		baseStep.clearTestData(ownerId);
-	}
-
-	protected void clearTestData(int ownerId, int petId) {
-		baseStep.clearTestData(ownerId, petId);
-	}
-
-	public void clearTestData(ArrayList<Owner> ownersList) {
-		baseStep.clearTestData(ownersList);
 	}
 
 	protected void log(Log log, String object) {

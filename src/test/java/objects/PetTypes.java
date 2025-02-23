@@ -1,4 +1,4 @@
-package tests.objectsAndMappers;
+package objects;
 
 public class PetTypes {
 

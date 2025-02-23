@@ -1,19 +1,19 @@
-package tests.managers;
+package db;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
-import tests.DataSourceProvider;
-import tests.objectsAndMappers.Owner;
-import tests.objectsAndMappers.OwnersRowMapper;
+import dataproviders.DataSourceProvider;
+import objects.Owner;
+import objects.OwnersRowMapper;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static tests.managers.BaseManager.Log.*;
+import static db.BaseManager.Log.*;
 
 public class OwnersManager extends BaseManager implements OwnersManagerInterface {
 

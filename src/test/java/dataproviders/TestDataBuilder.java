@@ -1,10 +1,11 @@
-package testsData;
+package dataproviders;
 
+import config.TestContext;
 import org.testng.SkipException;
-import tests.managers.OwnersManager;
-import tests.objectsAndMappers.Owner;
-import tests.objectsAndMappers.Pet;
-import tests.objectsAndMappers.PetTypes;
+import db.OwnersManager;
+import objects.Owner;
+import objects.Pet;
+import objects.PetTypes;
 
 import java.util.ArrayList;
 
@@ -118,6 +119,7 @@ public class TestDataBuilder {
                     " doesn't match between database and data's from Excel file!\n" +
                     "In file: " + listLength + ", in database: " + lastNameCount);
         }
+        TestContext.setOwnerListToClear(ownersList);
         return ownersList;
     }
 

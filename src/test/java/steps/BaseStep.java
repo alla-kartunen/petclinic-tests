@@ -1,17 +1,17 @@
 package steps;
 
+import config.TestContext;
 import io.qameta.allure.Step;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.testng.SkipException;
 import org.testng.asserts.SoftAssert;
-import tests.managers.OwnersManager;
-import tests.managers.PetsManager;
-import tests.objectsAndMappers.Owner;
-import tests.objectsAndMappers.Pet;
-import testsData.GetData;
-import testsData.SoftAssertWithScreenShot;
-import testsData.TestDataBuilder;
+import db.OwnersManager;
+import db.PetsManager;
+import objects.Owner;
+import objects.Pet;
+import dataproviders.GetData;
+import dataproviders.TestDataBuilder;
 
 import java.util.ArrayList;
 
@@ -34,8 +34,7 @@ public class BaseStep {
     private final OwnersManager ownersManager = new OwnersManager();
     private final PetsManager petsManager = new PetsManager();
 
-    protected SoftAssertWithScreenShot uiSoftAssert = new SoftAssertWithScreenShot();
-    protected SoftAssert dbSoftAssert = new SoftAssert();
+    protected SoftAssert softAssert = new SoftAssert();
     protected final Logger logger = LogManager.getLogger(this.getClass());
     protected final String separator = "-------------------------";
 
@@ -56,6 +55,7 @@ public class BaseStep {
         Owner owner = testData.getOwner(data);
         ownersManager.deleteOwner(owner.getLastName());
         owner.setId(ownersManager.createOwnerAndGetId(owner));
+        TestContext.setOwnerToClear(owner.getId());
         log(END_DATA_PREPARATION, "Owner");
         return owner;
     }
@@ -108,18 +108,35 @@ public class BaseStep {
         log(PROCESS, "Pet data " + testData.getPetData(data) + " for owner id = " + owner.getId());
         Pet pet = testData.getPet(data, owner);
         pet.setId(petsManager.createPetAndGetId(pet));
+        TestContext.setPetToClear(pet.getId());
         log(END_DATA_PREPARATION, "Pet");
         return pet;
     }
 
-    @Step("Clear test data. Delete owner from DB")
+    @Step("Clear test data")
+    public void clearTestData() {
+        if (TestContext.getPetToClear() != 0) {
+            clearTestData(TestContext.getOwnerToClear(), TestContext.getPetToClear());
+            TestContext.clearPetId();
+            TestContext.clearOwnerId();
+        }
+        if (TestContext.getOwnerToClear() != 0) {
+            clearTestData(TestContext.getOwnerToClear());
+            TestContext.clearOwnerId();
+        } else if (!TestContext.isOwnerListEmpty()) {
+            clearTestData(TestContext.getOwnerListToClear());
+            TestContext.clearListOfOwnerId();
+        }
+    }
+
+    @Step("Delete owner from DB")
     public void clearTestData(int ownerId) {
         log(START_CLEANING, null);
         ownersManager.deleteOwner(ownerId);
         log(END_CLEANING, null);
     }
 
-    @Step("Clear test data. Delete owner & pet from DB")
+    @Step("Delete owner & pet from DB")
     public void clearTestData(int ownerId, int petId) {
         log(START_CLEANING, null);
         petsManager.deletePet(petId);

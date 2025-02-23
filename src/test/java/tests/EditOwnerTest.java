@@ -1,15 +1,12 @@
 package tests;
 
 import io.qameta.allure.*;
-import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
-import tests.objectsAndMappers.Owner;
-import testsData.AllureListener;
-import testsData.GetData;
+import objects.Owner;
+import dataproviders.GetData;
 
 import java.util.ArrayList;
 
-@Listeners({AllureListener.class})
 public class EditOwnerTest extends BaseTest {
 
 	@Test(dataProvider = "ownerTestData", dataProviderClass = GetData.class, priority = 1)
@@ -23,10 +20,9 @@ public class EditOwnerTest extends BaseTest {
 
 		openOwnerPageById(notEditedOwner.getId());
 		ownerCrudSteps.editOwner(editedOwner)
-						.waitForPageTitle();
-		ownerInformationSteps.verifyOwnerInDB(editedOwner, notEditedOwner.getId());
-		clearTestData(notEditedOwner.getId());
-		ownerInformationSteps.endOfSoftAssert();
+						.waitForPageTitle()
+						.verifyOwnerInDB(editedOwner, notEditedOwner.getId())
+						.endOfSoftAssert();
 	}
 
 	@Test(dataProvider = "ownerTestData", dataProviderClass = GetData.class, priority = 2)
@@ -40,10 +36,9 @@ public class EditOwnerTest extends BaseTest {
 
 		openOwnerPageById(notEditedOwner.getId());
 		ownerCrudSteps.editOwner(editedOwner)
-						.waitForPageTitle();
-		ownerInformationSteps.verifyOwnerInformationPage(editedOwner);
-		clearTestData(notEditedOwner.getId());
-		ownerInformationSteps.endOfSoftAssert();
+						.waitForPageTitle()
+						.verifyOwnerInformationPage(editedOwner)
+						.endOfSoftAssert();
 	}
 
 }

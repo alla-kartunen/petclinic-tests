@@ -1,6 +1,6 @@
-package tests.managers;
+package db;
 
-import tests.objectsAndMappers.Owner;
+import objects.Owner;
 
 import java.util.ArrayList;
 import java.util.List;
